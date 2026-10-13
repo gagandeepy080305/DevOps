@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s      # Prometheus default is 1m when not set
+  evaluation_interval: 15s  # how often alert rules are evaluated (default 1m)
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "delivery_service"
+    static_configs:
+      - targets: ["172.17.0.1:8000"]
+
+rule_files:
+  - /etc/prometheus/alert_rules.yml

@@ -1,0 +1,102 @@
+pipeline {
+    agent any
+    stages {
+        stage('Pre-check Docker') {
+            steps {
+                script {
+                    try {
+                        // Check if Docker is installed
+                        def dockerVersion = sh(script: 'docker --version', returnStdout: true).trim()
+                        if (!dockerVersion) {
+                            error "Docker is not installed or not in the PATH. Please install Docker."
+                        }
+
+                        // Check if Docker daemon is running
+                        def dockerInfo = sh(script: 'docker info', returnStatus: true)
+                        if (dockerInfo != 0) {
+                            error "Docker daemon is not running. Please start the Docker service."
+                        }
+
+                        echo "Docker is available and running: ${dockerVersion}"
+                    } catch (Exception e) {
+                        error "Pre-check failed: ${e.message}"
+                    }
+                }
+            }
+        }
+        stage('Setup Workspace') {
+            steps {
+                script {
+                    // Exercise-6 folder, mounted read-only into the Jenkins container at /project
+                    def localSourcePath = '/project'
+                    def workspacePath = env.WORKSPACE
+
+                    // Copy necessary files into the Jenkins workspace
+                    sh """
+                    cp ${localSourcePath}/delivery_metrics.py ${workspacePath}/
+                    cp ${localSourcePath}/requirements.txt ${workspacePath}/
+                    cp ${localSourcePath}/Dockerfile ${workspacePath}/
+                    cp ${localSourcePath}/prometheus.yml ${workspacePath}/
+                    cp ${localSourcePath}/alert_rules.yml ${workspacePath}/
+                    cp -r ${localSourcePath}/grafana ${workspacePath}/
+                    ls -la ${workspacePath}
+                    """
+                }
+            }
+        }
+        stage('Clean Up Old Containers') {
+            steps {
+                // Remove containers from a previous run so the pipeline can be re-run
+                sh 'docker rm -f delivery_metrics prometheus grafana || true'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t delivery_metrics .'
+            }
+        }
+        stage('Run Application') {
+            steps {
+                sh 'docker run -d -p 8000:8000 --name delivery_metrics delivery_metrics'
+            }
+        }
+        stage('Run Prometheus & Grafana') {
+            steps {
+                // The workspace lives inside the Jenkins container, so the Docker engine cannot
+                // bind-mount files from it. Copy the config files into the containers instead.
+                sh '''
+                docker create --name prometheus -p 9090:9090 prom/prometheus
+                docker cp prometheus.yml prometheus:/etc/prometheus/prometheus.yml
+                docker cp alert_rules.yml prometheus:/etc/prometheus/alert_rules.yml
+                docker start prometheus
+
+                docker create --name grafana -p 3000:3000 \
+                  -e GF_AUTH_ANONYMOUS_ENABLED=true \
+                  -e GF_AUTH_ANONYMOUS_ORG_ROLE=Admin \
+                  grafana/grafana
+                docker cp grafana/provisioning/. grafana:/etc/grafana/provisioning/
+                docker cp grafana/dashboards grafana:/var/lib/grafana/
+                docker start grafana
+                '''
+            }
+        }
+        stage('Verify Services') {
+            steps {
+                sh '''
+                for i in $(seq 1 30); do
+                  curl -sf http://172.17.0.1:9090/-/ready >/dev/null && curl -sf http://172.17.0.1:3000/api/health >/dev/null && break
+                  sleep 2
+                done
+                echo "--- delivery_metrics ---"
+                curl -s http://172.17.0.1:8000/metrics | grep -E '^(total|pending|on_the_way)_deliveries'
+                echo "--- prometheus ---"
+                curl -s http://172.17.0.1:9090/-/ready
+                echo "--- grafana ---"
+                curl -s http://172.17.0.1:3000/api/health
+                echo
+                docker ps --format 'table {{.Names}}\\t{{.Image}}\\t{{.Status}}\\t{{.Ports}}'
+                '''
+            }
+        }
+    }
+}

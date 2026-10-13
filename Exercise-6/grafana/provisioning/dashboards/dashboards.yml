@@ -1,0 +1,6 @@
+apiVersion: 1
+providers:
+  - name: delivery-monitoring
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

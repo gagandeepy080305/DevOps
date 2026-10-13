@@ -7,7 +7,7 @@
 | 3 | [Scaling a Flask App with ReplicaSets](./Exercise-3) | Completed |
 | 4 | [Docker Networking with Multiple Containers](./Exercise-4) | Completed |
 | 5 | [Docker Security with AppArmor](./Exercise-5) | Completed |
-| 6 | [Real-Time Monitoring with Prometheus and Grafana](./Exercise-6) | Pending |
+| 6 | [Real-Time Monitoring with Prometheus and Grafana](./Exercise-6) | Completed |
 | 7 | [Jenkins CI Automation](./Exercise-7) | Pending |
 | 8 | [Jenkins Hello World Job](./Exercise-8) | Pending |
 | 9 | [Jenkins Multi-Stage Pipeline](./Exercise-9) | Pending |
