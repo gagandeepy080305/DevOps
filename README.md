@@ -10,7 +10,7 @@
 | 6 | [Real-Time Monitoring with Prometheus and Grafana](./Exercise-6) | Completed |
 | 7 | [Jenkins CI Automation](./Exercise-7) | Completed |
 | 8 | [Jenkins Hello World Job](./Exercise-8) | Completed |
-| 9 | [Jenkins Multi-Stage Pipeline](./Exercise-9) | Pending |
+| 9 | [Jenkins Multi-Stage Pipeline](./Exercise-9) | Completed |
 | 10 | [Multi-Node, Multi-App Minikube Deployment](./Exercise-10) | Pending |
 
 Exercise reference: [SunagP/DevOps-Lab](https://github.com/SunagP/DevOps-Lab/tree/main/Exercises)
