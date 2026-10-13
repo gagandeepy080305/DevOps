@@ -4,7 +4,7 @@
 |---|----------|--------|
 | 1 | [Kubernetes Getting Started (Nginx Pod on Minikube)](./Exercise-1) | Completed |
 | 2 | [Deploy a Flask App on Minikube using kubectl and YAML](./Exercise-2) | Completed |
-| 3 | [Scaling a Flask App with ReplicaSets](./Exercise-3) | Pending |
+| 3 | [Scaling a Flask App with ReplicaSets](./Exercise-3) | Completed |
 | 4 | [Docker Networking with Multiple Containers](./Exercise-4) | Pending |
 | 5 | [Docker Security with AppArmor](./Exercise-5) | Pending |
 | 6 | [Real-Time Monitoring with Prometheus and Grafana](./Exercise-6) | Pending |
