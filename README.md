@@ -8,7 +8,7 @@
 | 4 | [Docker Networking with Multiple Containers](./Exercise-4) | Completed |
 | 5 | [Docker Security with AppArmor](./Exercise-5) | Completed |
 | 6 | [Real-Time Monitoring with Prometheus and Grafana](./Exercise-6) | Completed |
-| 7 | [Jenkins CI Automation](./Exercise-7) | Pending |
+| 7 | [Jenkins CI Automation](./Exercise-7) | Completed |
 | 8 | [Jenkins Hello World Job](./Exercise-8) | Pending |
 | 9 | [Jenkins Multi-Stage Pipeline](./Exercise-9) | Pending |
 | 10 | [Multi-Node, Multi-App Minikube Deployment](./Exercise-10) | Pending |
